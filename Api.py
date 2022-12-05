@@ -15,7 +15,7 @@ endpoint = "https://frost.met.no/observations/v0.jsonld"
 reftime format: 2010-04-01/2010-04-03
 returns a pd.DataFrame
 """
-def getData(reftime: str) -> pd.DataFrame():
+def getData(reftime: str) -> pd.DataFrame:
     
     if(exists("dataframe.csv")):
         print("Found dataframe.csv")
