@@ -18,6 +18,7 @@ returns a pd.DataFrame
 def getData(reftime: str) -> pd.DataFrame():
     
     if(exists("dataframe.csv")):
+        print("Found dataframe.csv")
         df = pd.read_csv("dataframe.csv")
         return df
     
