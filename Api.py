@@ -1,3 +1,8 @@
+import sys
+import subprocess
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+'requests'])
+
 import requests
 import pandas as pd
 from os.path import exists
