@@ -24,7 +24,7 @@ def getData(reftime: str) -> pd.DataFrame():
     
     r = requests.get(endpoint, params, auth=(client_id, ""))
 
-    json = r.json
+    json = r.json()
 
     if r.status_code == 200: 
         data = json ["data"]
@@ -33,6 +33,8 @@ def getData(reftime: str) -> pd.DataFrame():
         print('Error! Returned status code %s' % r.status_code)
         print('Message: %s' % json['error']['message'])
         print('Reason: %s' % json['error']['reason'])
+        raise Exception("Error! Returned status code {status_code} \n Message: {msg} \n Reason {reason} %".format(status_code=r.status_code, msg=json['error']['message'], reason=json['error']['reason']))
+        return None
 
     df = pd.DataFrame()
     for i in range(len(data)):
