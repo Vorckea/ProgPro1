@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+from os.path import exists
 
 client_id = "<client id>"
 
@@ -7,8 +8,13 @@ endpoint = "https://frost.met.no/observations/v0.jsonld"
 
 """_summary_
 reftime format: 2010-04-01/2010-04-03
+returns a pd.DataFrame
 """
 def getData(reftime: str) -> pd.DataFrame():
+    
+    if(exists("dataframe.csv")):
+        df = pd.read_csv("dataframe.csv")
+        return df
     
     params = {
     "sources": "SN18700,SN90450",
@@ -36,3 +42,7 @@ def getData(reftime: str) -> pd.DataFrame():
         df = df.append(row)
     
     df = df.reset_index()
+    
+    df.to_csv("dataframe.csv")
+    
+    return df
