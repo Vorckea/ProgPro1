@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 #DF
-kjoretoy.csv
 .vs
 dataframe.csv
+config.ini

@@ -9,7 +9,8 @@ import pandas as pd
 from os.path import exists
 
 config = configparser.ConfigParser()
-client_id = ""
+config.read("config.ini")
+clientid = config["DEFAULT"]["client_id"]
 
 endpoint = "https://frost.met.no/observations/v0.jsonld"
 
