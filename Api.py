@@ -2,12 +2,15 @@ import sys
 import subprocess
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
 'requests'])
+import configparser
 
 import requests
 import pandas as pd
 from os.path import exists
 
-client_id = "<client id>"
+config = configparser.ConfigParser()
+config.read("config.ini")
+client_id = config["DEFAULT"]["client_id"]
 
 endpoint = "https://frost.met.no/observations/v0.jsonld"
 
@@ -23,7 +26,7 @@ def getData(reftime: str) -> pd.DataFrame:
         return df
     
     params = {
-    "sources": "SN18700,SN90450",
+    "sources": "SN19430",
     "elements": "mean(air_temperature P1D),sum(precipitation_amount P1D),mean(wind_speed P1D)",
     'referencetime': reftime,
     }
