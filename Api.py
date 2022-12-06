@@ -10,7 +10,7 @@ from os.path import exists
 
 config = configparser.ConfigParser()
 config.read("config.ini")
-clientid = config["DEFAULT"]["client_id"]
+client_id = config["DEFAULT"]["client_id"]
 
 endpoint = "https://frost.met.no/observations/v0.jsonld"
 
