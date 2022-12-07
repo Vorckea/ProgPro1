@@ -26,7 +26,7 @@ def getData(reftime: str) -> pd.DataFrame:
         return df
     
     params = {
-    "sources": "SN19430",
+    "sources": "SN18700",
     "elements": "mean(air_temperature P1D),sum(precipitation_amount P1D),mean(wind_speed P1D)",
     'referencetime': reftime,
     }
@@ -34,7 +34,7 @@ def getData(reftime: str) -> pd.DataFrame:
     r = requests.get(endpoint, params, auth=(client_id, ""))
 
     json = r.json()
-
+    
     if r.status_code == 200: 
         data = json ["data"]
         print("Data retrieved")
