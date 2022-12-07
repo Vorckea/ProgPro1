@@ -5,3 +5,4 @@ def fixTable(df: pd.DataFrame) -> pd.DataFrame:
     df = df.pivot_table(index="referenceTime", columns="elementId", values="value", aggfunc="mean")
     df = df.reset_index()
     return df
+
