@@ -131,4 +131,5 @@ dmypy.json
 #DF
 .vs
 dataframe.csv
+dataframeFixed.csv
 config.ini
