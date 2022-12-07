@@ -27,7 +27,7 @@ def getData(reftime: str) -> pd.DataFrame:
     
     params = {
     "sources": "SN18700",
-    "elements": "mean(air_temperature P1D),sum(precipitation_amount P1D),mean(air_pressure_at_sea_level P1D),mean(wind_speed P1D),sum(water_evaporation_amount P1D),mean(relative_humidity P1D),mean(cloud_area_fraction P1D)",
+    "elements": "mean(air_temperature P1D),sum(precipitation_amount P1D),mean(air_pressure_at_sea_level P1D),mean(wind_speed P1D),sum(water_evaporation_amount P1D),mean(relative_humidity P1D),mean(cloud_area_fraction P1D),sum(duration_of_sunshine P1D)",
     'referencetime': reftime,
     }
     
