@@ -3,6 +3,7 @@ import subprocess
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
 'requests'])
 import configparser
+from datetime import date
 
 import requests
 import pandas as pd
@@ -16,14 +17,18 @@ endpoint = "https://frost.met.no/observations/v0.jsonld"
 
 """_summary_
 reftime format: 2010-04-01/2010-04-03
+n_lines: returns every nth line
 returns a pd.DataFrame
 """
-def getData(reftime: str) -> pd.DataFrame:
+def getData(reftime: str, n_lines: int) -> pd.DataFrame:
+    metadata = pd.DataFrame()
     
-    if(exists("dataframe.csv")):
-        print("Found dataframe.csv")
+    if(exists("dataframe.csv")) and (exists("metadata.json")):
+        metadata = pd.read_json("metadata.json")
+        print("Found dataframe.csv, retrieved", metadata["date_retrieved"][0])
         df = pd.read_csv("dataframe.csv")
-        return df
+        return df    
+    
     
     params = {
     "sources": "SN18700",
@@ -46,7 +51,7 @@ def getData(reftime: str) -> pd.DataFrame:
         return None
 
     df = pd.DataFrame()
-    for i in range(len(data)):
+    for i in range(0, len(data), n_lines):
         row = pd.DataFrame(data[i]["observations"])
         row["referenceTime"] = data[i]["referenceTime"]
         row["sourceId"] = data[i]["sourceId"]
@@ -54,6 +59,13 @@ def getData(reftime: str) -> pd.DataFrame:
     
     df = df.reset_index()
     
+    metadata["sources"] = [params["sources"]]
+    metadata["elements"] = [params["elements"]]
+    metadata["reftime"] = [reftime]
+    metadata["rows"] = [len(df)]
+    metadata["date_retrieved"] = [date.today()]
+    
     df.to_csv("dataframe.csv")
+    metadata.to_json("metadata.json")
     
     return df
