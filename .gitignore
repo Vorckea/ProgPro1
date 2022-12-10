@@ -132,4 +132,5 @@ dmypy.json
 .vs
 dataframe.csv
 dataframeFixed.csv
+metadata.json
 config.ini
