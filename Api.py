@@ -26,8 +26,11 @@ def getData(reftime: str, n_lines: int) -> pd.DataFrame:
     if(exists("dataframe.csv")) and (exists("metadata.json")):
         metadata = pd.read_json("metadata.json")
         print("Found dataframe.csv, retrieved", metadata["date_retrieved"][0])
-        df = pd.read_csv("dataframe.csv")
-        return df    
+        if metadata["reftime"][0] == reftime and metadata["n_lines"][0] == n_lines:
+            df = pd.read_csv("dataframe.csv")
+            return df
+        else:
+            print("Dataframe, doesn't match params. New data will be retrieved")
     
     
     params = {
@@ -64,6 +67,7 @@ def getData(reftime: str, n_lines: int) -> pd.DataFrame:
     metadata["reftime"] = [reftime]
     metadata["rows"] = [len(df)]
     metadata["date_retrieved"] = [date.today()]
+    metadata["n_lines"] = [n_lines]
     
     df.to_csv("dataframe.csv")
     metadata.to_json("metadata.json")
