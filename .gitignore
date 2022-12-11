@@ -134,3 +134,4 @@ dataframe.csv
 dataframeFixed.csv
 metadata.json
 config.ini
+*.ini
