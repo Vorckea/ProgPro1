@@ -10,8 +10,7 @@ import pandas as pd
 from os.path import exists
 
 config = configparser.ConfigParser()
-config.read("config.ini")
-client_id = config["DEFAULT"]["client_id"]
+
 
 endpoint = "https://frost.met.no/observations/v0.jsonld"
 
@@ -22,6 +21,8 @@ returns a pd.DataFrame
 """
 def getData(reftime: str, n_lines: int) -> pd.DataFrame:
     metadata = pd.DataFrame()
+    config.read("config.ini")
+    client_id = config["DEFAULT"]["client_id"]
     
     if(exists("dataframe.csv")) and (exists("metadata.json")):
         metadata = pd.read_json("metadata.json")
