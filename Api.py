@@ -14,7 +14,7 @@ reftime format: 2010-04-01/2010-04-03
 n_lines: returns every nth line
 returns a pd.DataFrame
 """
-def getData(reftime: str, n_lines: int) -> pd.DataFrame:
+def getData(reftime: str = "2020-04-01/2020-5-01", n_lines: int = 1) -> pd.DataFrame:
     metadata = pd.DataFrame()
     config.read("config.ini")
     client_id = config["DEFAULT"]["client_id"]
@@ -30,8 +30,8 @@ def getData(reftime: str, n_lines: int) -> pd.DataFrame:
     
     
     params = {
-    "sources": "SN18700",
-    "elements": "mean(air_temperature P1D),sum(precipitation_amount P1D),mean(air_pressure_at_sea_level P1D),mean(wind_speed P1D),sum(water_evaporation_amount P1D),mean(relative_humidity P1D),mean(cloud_area_fraction P1D),sum(duration_of_sunshine P1D)",
+    "sources": config["DEFAULT"]["sources"],
+    "elements": config["DEFAULT"]["elements"],
     'referencetime': reftime,
     }
     
