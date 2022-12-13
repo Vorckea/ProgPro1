@@ -9,12 +9,13 @@ config = configparser.ConfigParser()
 
 endpoint = "https://frost.met.no/observations/v0.jsonld"
 
-"""_summary_
-reftime format: 2010-04-01/2010-04-03
-n_lines: returns every nth line
-returns a pd.DataFrame
-"""
+
 def getData(reftime: str = "2020-04-01/2020-5-01", n_lines: int = 1) -> pd.DataFrame:
+    """_summary_
+    reftime format: 2010-04-01/2010-04-03
+    n_lines: int number
+    returns a pd.DataFrame
+    """
     metadata = pd.DataFrame()
     config.read("config.ini")
     client_id = config["DEFAULT"]["client_id"]
