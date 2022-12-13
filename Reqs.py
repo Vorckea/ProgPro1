@@ -7,3 +7,7 @@ def downloadReqs():
     'altair'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
     'altair_viewer'])
+    
+if __name__=="__main__":
+    downloadReqs()
+    print("help me")
