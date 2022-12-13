@@ -1,5 +1,5 @@
 import configparser
-from datetime import date
+from datetime import datetime
 import requests
 import pandas as pd
 from os.path import exists
@@ -26,7 +26,7 @@ def getData(reftime: str, n_lines: int) -> pd.DataFrame:
             df = pd.read_csv("dataframe.csv")
             return df
         else:
-            print("Dataframe, doesn't match params. New data will be retrieved")
+            print("Existing dataframe doesn't match params. New data will be retrieved")
     
     
     params = {
@@ -62,7 +62,7 @@ def getData(reftime: str, n_lines: int) -> pd.DataFrame:
     metadata["elements"] = [params["elements"]]
     metadata["reftime"] = [reftime]
     metadata["rows"] = [len(df)]
-    metadata["date_retrieved"] = [date.today()]
+    metadata["date_retrieved"] = [datetime.now().strftime("%m/%d/%y %H:%M")]
     metadata["n_lines"] = [n_lines]
     
     df.to_csv("dataframe.csv")
