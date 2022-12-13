@@ -1,10 +1,5 @@
-import sys
-import subprocess
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
-'requests'])
 import configparser
 from datetime import date
-
 import requests
 import pandas as pd
 from os.path import exists
