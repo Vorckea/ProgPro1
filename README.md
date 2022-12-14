@@ -40,3 +40,7 @@ res = Utils.regression.fit_sin(df.index, df["mean(air_temperature P1D)"])
 
 ## make_markdown_table()
 Turns a Pandas array into a markdown table to be easier to read and present
+
+Input: Python list with rows of table as lists\
+First element as list of headers. \
+Output: String to copy into a .md file
