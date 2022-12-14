@@ -33,6 +33,8 @@ df = Utils.ApiAndDataHandeling.fixTable(df)
 ## fit_sin()
 Fit sin to the input data, and return fitting parameters "amp", "omega", "phase", "offset", "freq", "period" and "fitfunc"
 
+Requires two Pandas Series, one to represent each axis. 
+
 Example use:
 ```Python 
 res = Utils.regression.fit_sin(df.index, df["mean(air_temperature P1D)"])
