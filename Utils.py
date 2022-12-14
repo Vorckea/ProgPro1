@@ -1,8 +1,14 @@
+import warnings
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import configparser
 from datetime import datetime
-import requests
-import pandas as pd
 from os.path import exists
+
+import numpy
+import pandas as pd
+import requests
+import scipy.optimize
 
 config = configparser.ConfigParser()
 
@@ -70,3 +76,59 @@ def getData(reftime: str = "2020-04-01/2020-5-01", n_lines: int = 1) -> pd.DataF
     metadata.to_json("metadata.json")
     
     return df
+
+def fit_sin(tt, yy):
+    '''Fit sin to the input time sequence, and return fitting parameters "amp", "omega", "phase", "offset", "freq", "period" and "fitfunc"'''
+    tt = numpy.array(tt)
+    yy = numpy.array(yy)
+    ff = numpy.fft.fftfreq(len(tt), (tt[1]-tt[0]))   # assume uniform spacing
+    Fyy = abs(numpy.fft.fft(yy))
+    guess_freq = abs(ff[numpy.argmax(Fyy[1:])+1])   # excluding the zero frequency "peak", which is related to offset
+    guess_amp = numpy.std(yy) * 2.**0.5
+    guess_offset = numpy.mean(yy)
+    guess = numpy.array([guess_amp, 2.*numpy.pi*guess_freq, 0., guess_offset])
+
+    def sinfunc(t, A, w, p, c):  return A * numpy.sin(w*t + p) + c
+    popt, pcov = scipy.optimize.curve_fit(sinfunc, tt, yy, p0=guess)
+    A, w, p, c = popt
+    f = w/(2.*numpy.pi)
+    fitfunc = lambda t: A * numpy.sin(w*t + p) + c
+    return {"amp": A, "omega": w, "phase": p, "offset": c, "freq": f, "period": 1./f, "fitfunc": fitfunc, "maxcov": numpy.max(pcov), "rawres": (guess,popt,pcov)}
+
+def fixTable(df: pd.DataFrame) -> pd.DataFrame:
+    metadata = pd.DataFrame()
+    metadata = pd.read_json("metadata.json")
+    if(exists("dataframeFixed.csv")) and metadata['date_retrieved'][0] != datetime.now().strftime("%m/%d/%y %H:%M"):
+        print("Found dataframeFixed.csv")
+        df = pd.read_csv("dataframeFixed.csv")
+        return df
+    
+    df = df.pivot_table(index="referenceTime", columns="elementId", values="value", aggfunc="mean")
+    df = df.reset_index()
+    df.to_csv("dataframeFixed.csv")
+    return df
+
+def make_markdown_table(array):
+    """ Input: Python list with rows of table as lists
+               First element as header. 
+        Output: String to put into a .md file 
+        
+    Ex Input: 
+        [["Name", "Age", "Height"],
+         ["Jake", 20, 5'10],
+         ["Mary", 21, 5'7]] 
+    """
+    
+    nl = "\n"
+
+    markdown = nl
+    markdown += f"| {' | '.join(array[0])} |"
+
+    markdown += nl
+    markdown += f"| {' | '.join(['---']*len(array[0]))} |"
+
+    markdown += nl
+    for entry in array[1:]:
+        markdown += f"| {' | '.join(entry)} |{nl}"
+
+    return markdown

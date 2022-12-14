@@ -1,12 +1,12 @@
 import sys
 import subprocess
-def downloadReqs():
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
-    'requests'])
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
-    'scipy'])
+import importlib.util
 
-    
-if __name__=="__main__":
-    downloadReqs()
-    print("help me")
+def downloadReqs():
+    for i in ["requests", "scipy"]:
+        spec = importlib.util.find_spec(i)
+        if spec is None:
+            print(i +" is not installed, will install the package for you")
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+            i])
+        else: print(i + " found")
