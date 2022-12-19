@@ -14,10 +14,9 @@ config = configparser.ConfigParser()
 endpoint = "https://frost.met.no/observations/v0.jsonld"
 
 class ApiAndDataHandeling:
-    def getData(reftime: str = "2020-04-01/2020-5-01", n_lines: int = 1) -> pd.DataFrame:
+    def getData(reftime: str = "2020-04-01/2020-5-01") -> pd.DataFrame:
         """_summary_
         reftime format: 2010-04-01/2010-04-03
-        n_lines: int number
         returns a pd.DataFrame
         """
         metadata = pd.DataFrame()
@@ -55,7 +54,7 @@ class ApiAndDataHandeling:
             return None
 
         df = pd.DataFrame()
-        for i in range(0, len(data), n_lines):
+        for i in range(0, len(data)):
             row = pd.DataFrame(data[i]["observations"])
             row["referenceTime"] = data[i]["referenceTime"]
             row["sourceId"] = data[i]["sourceId"]
@@ -68,7 +67,6 @@ class ApiAndDataHandeling:
         metadata["reftime"] = [reftime]
         metadata["rows"] = [len(df)]
         metadata["date_retrieved"] = [datetime.now().strftime("%m/%d/%y %H:%M")]
-        metadata["n_lines"] = [n_lines]
         
         df.to_csv("dataframe.csv")
         metadata.to_json("metadata.json")
@@ -84,17 +82,18 @@ class ApiAndDataHandeling:
             df = pd.read_csv("dataframeFixed.csv")
             return df
         elif metadata["n_lines"][0] != n_lines:
-            df_old = df.pivot_table(index="referenceTime", columns="elementId", values="value", aggfunc="mean")
-            df_old = df_old.reset_index()
+            print("n_lines didn't match, refixing dataframe")
+            df = pd.read_csv("dataframeFixed.csv")
             NEWDF = pd.DataFrame
-            for i in df.index:
-                #if n_lines / (i+1) != round(n_lines/ (i+1), 1):
-                NEWDF = (df_old.iloc[::n_lines, :])
-                    #print(n_lines / (i+1))
+            NEWDF = (df.iloc[::n_lines, :])
+            metadata["n_lines"] = [n_lines]
+            metadata.to_json("metadata.json")
             return NEWDF
         df = df.pivot_table(index="referenceTime", columns="elementId", values="value", aggfunc="mean")
         df = df.reset_index()
         df.to_csv("dataframeFixed.csv")
+        metadata["n_lines"] = [n_lines]
+        metadata.to_json("metadata.json")
         return df
     
 class regression:
