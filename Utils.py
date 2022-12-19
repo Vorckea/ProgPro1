@@ -27,7 +27,7 @@ class ApiAndDataHandeling:
         if(exists("dataframe.csv")) and (exists("metadata.json")):
             metadata = pd.read_json("metadata.json")
             print("Found dataframe.csv, retrieved", metadata["date_retrieved"][0])
-            if metadata["reftime"][0] == reftime and metadata["n_lines"][0] == n_lines:
+            if metadata["reftime"][0] == reftime:
                 df = pd.read_csv("dataframe.csv")
                 return df
             else:
@@ -75,14 +75,23 @@ class ApiAndDataHandeling:
         
         return df
     
-    def fixTable(df: pd.DataFrame) -> pd.DataFrame:
+    def fixTable(df: pd.DataFrame, n_lines: int = 1) -> pd.DataFrame:
         metadata = pd.DataFrame()
         metadata = pd.read_json("metadata.json")
-        if(exists("dataframeFixed.csv")) and metadata['date_retrieved'][0] != datetime.now().strftime("%m/%d/%y %H:%M"):
+        
+        if(exists("dataframeFixed.csv")) and metadata['date_retrieved'][0] != datetime.now().strftime("%m/%d/%y %H:%M") and metadata["n_lines"][0] == n_lines:
             print("Found dataframeFixed.csv")
             df = pd.read_csv("dataframeFixed.csv")
             return df
-        
+        elif metadata["n_lines"][0] != n_lines:
+            df_old = df.pivot_table(index="referenceTime", columns="elementId", values="value", aggfunc="mean")
+            df_old = df_old.reset_index()
+            NEWDF = pd.DataFrame
+            for i in df.index:
+                #if n_lines / (i+1) != round(n_lines/ (i+1), 1):
+                NEWDF = (df_old.iloc[::n_lines, :])
+                    #print(n_lines / (i+1))
+            return NEWDF
         df = df.pivot_table(index="referenceTime", columns="elementId", values="value", aggfunc="mean")
         df = df.reset_index()
         df.to_csv("dataframeFixed.csv")
