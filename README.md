@@ -38,6 +38,7 @@ Requires two Pandas Series, one to represent each axis.
 Example use:
 ```Python 
 res = Utils.regression.fit_sin(df.index, df["mean(air_temperature P1D)"])
+sns.lineplot(x=df.index,  y=res["fitfunc"](df.index))
 ```
 
 ## make_markdown_table()
